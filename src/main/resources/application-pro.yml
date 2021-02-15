@@ -1,0 +1,15 @@
+files:
+  path:
+    #    上线时 改为线上地址
+    #    winpicupload: F:\InterestingThings\java\volunteer\src\main\resources\files\images\
+    #    winviupload: F:\InterestingThings\java\volunteer\src\main\resources\files\videos\
+    #    winotherupload: F:\InterestingThings\java\volunteer\src\main\resources\files\others\
+    winpicupload: files/images/
+    winviupload: files/videos/
+    winotherupload: files/others/
+    #    图片上传路径
+    picupload: file:/appTest/backend/files/images/
+    #    视频上传路径
+    viupload: file:/appTest/backend/files/videos/
+    #    其他文件上传路径
+    otherupload: file:/appTest/backend/files/others/
