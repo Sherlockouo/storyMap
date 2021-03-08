@@ -1,0 +1,83 @@
+server:
+  port: 8848
+
+spring:
+  profiles:
+    active: @profileActive@
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: wdf123456
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/storymap?serverTimezone=UTC
+    druid:
+      filter:
+        wall:
+          config:
+            condition-op-xor-allow:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  redis:
+    #    open: false  # 是否开启redis缓存  true开启   false关闭
+    database: 0
+    host: localhost
+    port: 6379
+    password: volunteer   # 密码（默认为空）
+    timeout: 6000ms  # 连接超时时长（毫秒）
+    jedis:
+      pool:
+        max-active: 1000  # 连接池最大连接数（使用负值表示没有限制）
+        max-wait: -1ms      # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 10      # 连接池中的最大空闲连接
+        min-idle: 5       # 连接池中的最小空闲连接
+  mail:
+    host: smtp.exmail.qq.com  # 对应各邮箱官方提示
+    username: wudingfeng@sherlockouo.com  # 账号
+    password: N38SG6o36jeAEXim  # 企业邮箱为 客户端专用密码
+    properties:
+      mail:
+        smtp:
+          auth: true # 使用
+          starttls: # 使用 SSL 安全协议，必须配置如下
+            enable: true
+            required: true
+    port: 465  # 端口
+    protocol: smtps # 协议
+
+
+knife4j:
+  enable: true
+  setting:
+    enableSwaggerModels: true
+
+mybatis-plus:
+  type-aliases-package: com.storymap.entity
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    banner: false
+    db-config:
+      id-type: auto
+      table-underline: true
+
+
+# jwt config
+jwt:
+  #  encrypt volunteer
+  secret: 2d56df9a08100634d51940309237855d
+
+mail:
+  from: wudingfeng@sherlockouo.com
+
+wx:
+  appId: wx2a06bd1dea2c555c
+  appSecret: ad4a0204004d1162eab3ac417ceb88cb
+
+
+debug: false
+
+
+
+

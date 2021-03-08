@@ -1,6 +1,6 @@
-package com.storymap.config.config;
+package com.storymap.config;
 
-import com.volunteer.service.MyUserDetailService;
+import com.storymap.service.MyUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,23 +25,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private MyUserDetailService myUserDetailService;
 
-    private String[] voluntter = {"/volunteer/register","/volunteer/counts"};
+    private String[] user = {"/user/login","/user/register"};
 
-    private String[] poster = {"/poster/list","/poster/info/**"};
+    private String[] posts ={"/poster/post","/poster/all","/poster/info/**","/poster/search/**"};
 
-    private String[] job =  {"/job/all","/job/list/**"};
-
-    private String[] hotActivity = {"/hotActivity/info/**","/hotActivity/list"};
-
-    private String[] goods ={"/goods/info/*","/goods/all","/goods/search"};
-
-    private String[] course = {"/course/info/*","/course/all","/course/search"};
-
-    private String[] community = {"/community/counts","/community/info/*","/community/all","/community/search"};
-
-    private String[] activity = {"/activity/communityActivity/**","/activity/info/*","/activity/counts","/activity/all","/activity/search","/activity/searchTime"};
-
-    private String[] activityContent = {"/activityContent/info/*","/activityContent/list/*"};
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {    //auth.inMemoryAuthentication()
@@ -52,21 +39,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 //.logout().logoutUrl("/logout").logoutSuccessUrl("/")
                 // 开放接口访问权限，不需要登录授权就可以访问
                 .authorizeRequests()
-                    .antMatchers(voluntter).permitAll()
-                    .antMatchers(poster).permitAll()
-                    .antMatchers(job).permitAll()
-                    .antMatchers(hotActivity).permitAll()
-                    .antMatchers(goods).permitAll()
-                    .antMatchers(course).permitAll()
-                    .antMatchers(community).permitAll()
-                    .antMatchers(activity).permitAll()
-                    .antMatchers(activityContent).permitAll()
-                    .antMatchers("/login/**",
+                    .antMatchers(user).permitAll()
+                    .antMatchers(posts).permitAll()
+                    .antMatchers(
                             "/code/**",
+                            "upload/**",
                             "/files/**",
-                            "/address/**",
-                            "/message/activityContent/**",
-                            "/type/**",
                             "/doc.html"
                     ).permitAll()
                     .antMatchers("/v2/api-docs", "/swagger-resources/configuration/ui","/swagger-resources", "/swagger-resources/configuration/security","/swagger-ui.html", "/webjars/**").permitAll()

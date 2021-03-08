@@ -1,4 +1,4 @@
-package com.storymap.config.config;
+package com.storymap.config;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.google.code.kaptcha.util.Config;

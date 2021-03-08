@@ -8,8 +8,8 @@ files:
     winviupload: files/videos/
     winotherupload: files/others/
     #    图片上传路径
-    picupload: file:/appTest/backend/files/images/
+    picupload: file:/appTest/backend/storymap/files/images/
     #    视频上传路径
-    viupload: file:/appTest/backend/files/videos/
+    viupload: file:/appTest/backend/storymap/files/videos/
     #    其他文件上传路径
-    otherupload: file:/appTest/backend/files/others/
+    otherupload: file:/appTest/backend/storymap/files/others/

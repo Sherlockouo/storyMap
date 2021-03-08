@@ -1,4 +1,4 @@
-package com.storymap.config.config;
+package com.storymap.config;
 
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;

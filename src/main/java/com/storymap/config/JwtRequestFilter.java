@@ -1,8 +1,8 @@
-package com.storymap.config.config;
+package com.storymap.config;
 
-import com.volunteer.service.MyUserDetailService;
-import com.volunteer.utils.common.JwtTokenUtil;
-import com.volunteer.utils.exception.VolException;
+import com.storymap.service.MyUserDetailService;
+import com.storymap.util.common.JwtTokenUtil;
+import com.storymap.util.exception.VolException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +45,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         } else {
 
             final String requestTokenHeader = request.getHeader("Authorization");
+            if(requestTokenHeader==null) {
+                chain.doFilter(request, response);
+                return;
+            }
 //            log.info("header={}", requestTokenHeader);
             String username = null;
             String jwtToken = null;
@@ -56,7 +60,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 try {
                     username = jwtTokenUtil.getUsernameFromToken(jwtToken);
                     userType = jwtTokenUtil.getUserTypeFromToken(jwtToken);
-                    log.info("user: {} type: {}",username,userType);
+                    log.info("user: {} type: {}", username, userType);
                 } catch (IllegalArgumentException e) {
                     System.out.println("Unable to get JWT Token");
                 } catch (ExpiredJwtException e) {
@@ -65,50 +69,35 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             } else {
 //                logger.warn("JWT Token does not begin with Bearer String Or Token is NULL");
             }
-            UserDetails userDetails;
+            UserDetails userDetails = null;
             // Once we get the token validate it.
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                if (userType == null)
-                    throw new UsernameNotFoundException(username);
-                switch (userType) {
-                    case "volunteer": {
-                        userDetails = this.myUserDetailService.loadVolunteerByUsername(username);
-                        break;
-                    }
-                    case "admin": {
-                        userDetails = this.myUserDetailService.loadAdminByUsername(username);
-                        break;
-                    }
-                    case "teacher": {
-                        userDetails = this.myUserDetailService.loadTeacherByUsername(username);
-                        break;
-                    }
-                    default: {
-                        throw new UsernameNotFoundException(username);
-                    }
-                }
+                userDetails = myUserDetailService.loadUserByname(username);
 
 
-                // if token is valid configure Spring Security to manually set
-                // authentication
-                if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
-
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
-                    usernamePasswordAuthenticationToken
-                            .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                    // After setting the Authentication in the context, we specify
-                    // that the current user is authenticated. So it passes the
-                    // Spring Security Configurations successfully.
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-                }else{
-                    throw new JwtException("token 失效",new VolException("token 失效"));
-                }
             }
 
-            chain.doFilter(request, response);
-        }
-    }
 
+            // if token is valid configure Spring Security to manually set
+            // authentication
+            if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
+
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+                usernamePasswordAuthenticationToken
+                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                // After setting the Authentication in the context, we specify
+                // that the current user is authenticated. So it passes the
+                // Spring Security Configurations successfully.
+                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            } else {
+                throw new JwtException("token 失效", new VolException("token 失效"));
+            }
+        }
+
+        chain.doFilter(request, response);
+    }
 }
+
+
