@@ -5,7 +5,7 @@ import com.storymap.entity.UserEntity;
 import com.storymap.service.MyUserDetailService;
 import com.storymap.service.UserService;
 import com.storymap.util.common.CodeUtil;
-import com.storymap.util.common.HttpUtils;
+import com.storymap.util.common.HttpUtl;
 import com.storymap.util.common.JwtTokenUtil;
 import com.storymap.util.common.R;
 import io.swagger.annotations.ApiOperation;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.Random;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
@@ -36,7 +35,7 @@ public class UserController {
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    HttpUtils httpUtils;
+    HttpUtl httpUtl;
 
     @Autowired
     JwtTokenUtil jwtTokenUtil;
@@ -47,7 +46,7 @@ public class UserController {
     @PostMapping("/login")
     @ApiOperation("登录 发获取的code")
     public R login(String wxcode) throws IOException {
-        String openid = httpUtils.getOpenId(wxcode);
+        String openid = httpUtl.getOpenId(wxcode);
 //        /getopenid/
 
         QueryWrapper<UserEntity> objectQueryWrapper = new QueryWrapper<>();
@@ -63,7 +62,7 @@ public class UserController {
     @Transactional(propagation = Propagation.REQUIRED)
     @ApiOperation("注册 => 微信授权 =>填写邮箱 =>注册成功 =>邮箱会发给他生成的验证码")
     public R register(String wxcode, String email) throws IOException {
-        String openId = httpUtils.getOpenId(wxcode);
+        String openId = httpUtl.getOpenId(wxcode);
         UserEntity userEntity = new UserEntity();
         userEntity.setOpenid(openId);
         userEntity.setUsername(email);

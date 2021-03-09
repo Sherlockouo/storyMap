@@ -1,5 +1,7 @@
 package com.storymap.util.common;
 
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.http.HttpUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @description: desc
@@ -23,7 +27,7 @@ import java.net.URL;
  */
 @Component
 @Slf4j
-public class HttpUtils {
+public class HttpUtl {
 
     @Value("${wx.appId}")
     private String appId;
@@ -88,5 +92,30 @@ public class HttpUtils {
         }
     }
 
+    public Map<String,Number> getAddress(String address){
+        Map<String,Number> mp = new HashMap<>();
+        String url = "https://apis.map.qq.com/ws/geocoder/v1/?address="+address+"&key="+Constant.MAPKEY+"";
+        String s = HttpUtil.get(url, CharsetUtil.CHARSET_UTF_8);
+        Gson gson = new Gson();
+        JsonObject jsonObject = gson.fromJson(s, JsonObject.class);
+        Number longtitude=0;
+        Number latitude=0;
+
+        if (jsonObject.has("result")) {
+            jsonObject = (JsonObject) jsonObject.get("result");
+            if(jsonObject.has("location")) {
+                jsonObject = (JsonObject) jsonObject.get("location");
+                latitude = Double.parseDouble(jsonObject.get("lat").toString());
+                longtitude = Double.parseDouble(jsonObject.get("lng").toString());
+                log.info("latitude:{},longtitude:{}", latitude, longtitude);
+            }
+        } else {
+            log.error("errmsg={}",jsonObject.toString());
+            return mp;
+        }
+        mp.put(Constant.LATITUDE,latitude);
+        mp.put(Constant.LONGTITUDE,longtitude);
+        return mp;
+    }
 
 }

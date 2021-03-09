@@ -25,7 +25,15 @@ public class Poster implements Serializable {
     @ApiModelProperty("地址")
     String address;
 
+    @ApiModelProperty("经度")
+    double longitude;
+
+    @ApiModelProperty("纬度")
+    double latitude;
+
     @ApiModelProperty("描述")
     String message;
 
+    @ApiModelProperty("文件urls")
+    String files;
 }
