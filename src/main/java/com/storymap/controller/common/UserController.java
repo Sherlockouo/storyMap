@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.storymap.entity.UserEntity;
 import com.storymap.service.MyUserDetailService;
 import com.storymap.service.UserService;
-import com.storymap.util.common.CodeUtil;
-import com.storymap.util.common.HttpUtl;
-import com.storymap.util.common.JwtTokenUtil;
-import com.storymap.util.common.R;
+import com.storymap.util.common.*;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.security.RolesAllowed;
 import java.io.IOException;
 import java.util.Random;
 
@@ -42,6 +40,13 @@ public class UserController {
 
     @Autowired
     CodeUtil codeUtil;
+
+    @PostMapping("/refresh")
+    @ApiOperation("更新token")
+    public R refreshToken(){
+
+        return R.success();
+    }
 
     @PostMapping("/login")
     @ApiOperation("登录 发获取的code")
@@ -95,7 +100,9 @@ public class UserController {
 
     @PutMapping("/update")
     @ApiOperation("更新头像 还没写")
-    public R update(){
+    @RolesAllowed({Constant.LOGIN})
+    public R update(String url){
+
         return R.success();
     }
 }

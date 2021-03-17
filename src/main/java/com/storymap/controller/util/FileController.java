@@ -81,9 +81,9 @@ public class FileController {
             randomName+=fname;
             fname=randomName;
 
-            String pic = ".+(.png|.jpg|.gif|.bmp|.psd|.tiff|.tga|.eps)$";
+            String pic = ".+(.png|.jpeg|.jpg|.gif|.bmp|.psd|.tiff|.tga|.eps)$";
 
-            String video = ".+(.swf|.flv|.mp4|.rmvb|.avi|.mpeg|.ra|.ram|.mov|.wmv)$";
+            String video = ".+(.swf|.mkv|.flv|.mp4|.rmvb|.avi|.mpeg|.ra|.ram|.mov|.wmv)$";
 
             // match images
             Pattern compile = Pattern.compile(pic);

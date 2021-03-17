@@ -27,7 +27,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private String[] user = {"/user/login","/user/register"};
 
-    private String[] posts ={"/poster/post","/poster/all","/poster/info/**","/poster/search/**"};
+    private String[] posts ={"/poster/all","/poster/local","/poster/info/**","/poster/search/**","/poster/type/**"};
 
 
     @Override

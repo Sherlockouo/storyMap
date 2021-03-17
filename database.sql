@@ -39,46 +39,8 @@ CREATE TABLE `file` (
 
 LOCK TABLES `file` WRITE;
 /*!40000 ALTER TABLE `file` DISABLE KEYS */;
-INSERT INTO `file` VALUES (1,1,'2021-02-18 12:16:32','截屏2021-02-14 上午11.45.37.png','null://localhost/files/images/5bdf621c79214aaabe894bc10afb3e59.png',NULL);
+INSERT INTO `file` VALUES (1,1,'2021-02-18 12:16:32','截屏2021-02-14 上午11.45.37.png','',NULL);
 /*!40000 ALTER TABLE `file` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `fileinfo`
---
-
-DROP TABLE IF EXISTS `fileinfo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `fileinfo` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `userid` bigint DEFAULT NULL,
-  `slogan` varchar(128) DEFAULT NULL,
-  `filename` varchar(128) DEFAULT NULL,
-  `filetype` varchar(32) DEFAULT NULL,
-  `filetags` varchar(128) DEFAULT NULL,
-  `filedesc` mediumtext,
-  `geo_location` varchar(128) DEFAULT NULL,
-  `GPS_longtitude_ref` varchar(8) DEFAULT NULL,
-  `GPS_longtitude` varchar(32) DEFAULT NULL,
-  `GPS_latitude_ref` varchar(8) DEFAULT NULL,
-  `GPS_latitude` varchar(32) DEFAULT NULL,
-  `altitude_ref` varchar(8) DEFAULT NULL,
-  `altitude` varchar(32) DEFAULT NULL,
-  `date_stamp` timestamp NULL DEFAULT NULL,
-  `make` varchar(32) DEFAULT NULL,
-  `model` varchar(32) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文件信息';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `fileinfo`
---
-
-LOCK TABLES `fileinfo` WRITE;
-/*!40000 ALTER TABLE `fileinfo` DISABLE KEYS */;
-/*!40000 ALTER TABLE `fileinfo` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -96,6 +58,10 @@ CREATE TABLE `poster` (
   `longtitude` double DEFAULT NULL,
   `latitude` double DEFAULT NULL,
   `files` mediumtext,
+  `title` varchar(256) DEFAULT NULL,
+  `likes` int DEFAULT '0',
+  `type` varchar(32) DEFAULT NULL,
+  `tags` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `poster_user_id_fk` (`userid`),
   CONSTRAINT `poster_user_id_fk` FOREIGN KEY (`userid`) REFERENCES `user` (`id`)
@@ -108,7 +74,7 @@ CREATE TABLE `poster` (
 
 LOCK TABLES `poster` WRITE;
 /*!40000 ALTER TABLE `poster` DISABLE KEYS */;
-INSERT INTO `poster` VALUES (1,1,'test','中国四川省成都市郫都区西华大学',NULL,NULL,NULL);
+INSERT INTO `poster` VALUES (1,1,'test','中国四川省成都市郫都区西华大学',103.961236,30.778621,NULL,NULL,0,NULL,NULL);
 /*!40000 ALTER TABLE `poster` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -154,4 +120,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-03-09 13:33:43
+-- Dump completed on 2021-03-15 15:11:44

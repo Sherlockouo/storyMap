@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -26,14 +27,26 @@ public class Poster implements Serializable {
     String address;
 
     @ApiModelProperty("经度")
-    double longitude;
+    double longtitude;
 
     @ApiModelProperty("纬度")
     double latitude;
 
+    @ApiModelProperty("点赞数")
+    Integer likes;
+
+    @ApiModelProperty("title")
+    String title;
+
     @ApiModelProperty("描述")
     String message;
 
+    @ApiModelProperty("类型")
+    String type;
+
     @ApiModelProperty("文件urls")
     String files;
+
+    @ApiModelProperty("tags")
+    String tags;
 }
