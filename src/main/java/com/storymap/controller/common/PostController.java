@@ -5,13 +5,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.storymap.entity.Poster;
 import com.storymap.entity.UserEntity;
+import com.storymap.service.MyUserDetailService;
 import com.storymap.service.PosterService;
 import com.storymap.util.common.*;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +24,7 @@ import javax.annotation.security.RolesAllowed;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/poster")
 public class PostController {
@@ -33,16 +37,21 @@ public class PostController {
     @Autowired
     HttpUtl httpUtl;
 
+    @Autowired
+    JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    MyUserDetailService myUserDetailService;
+
     @PostMapping("/post")
     @ApiOperation("发poster")
     @RolesAllowed({Constant.LOGIN})
     public R post(Poster poster){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity loginUser = authUtil.getLoginUser(authentication);
-        poster.setId(loginUser.getId());
+        poster.setUserid(loginUser.getId());
         posterService.save(poster);
-
-        return R.success("发布成功");
+        return R.success();
     }
 
     @GetMapping("/self")
@@ -84,11 +93,12 @@ public class PostController {
     @GetMapping("/local")
     @ApiOperation("获取本地poster信息")
 //    @RolesAllowed({Constant.LOGIN})
-    public R getLocal(@ApiParam("lat") Number lat,@ApiParam("lng") Number lng, @ApiParam("pageNumber") Integer pageNum,@ApiParam("pageSize") Integer pageSize){
+    public R getLocal(@ApiParam("lat") Number lat,@ApiParam("lng") Number lng ,@ApiParam("type") String type, @ApiParam("pageNumber") Integer pageNum,@ApiParam("pageSize") Integer pageSize){
         QueryWrapper<Poster> objectQueryWrapper = new QueryWrapper<>();
         objectQueryWrapper.and(
                 Wrapper->Wrapper.between("latitude",lat.floatValue()-Constant.RANGE,lat.floatValue()+Constant.RANGE)
                                 .between("longtitude",lng.floatValue()-Constant.RANGE,lng.floatValue()+Constant.RANGE)
+                                .eq("type",type)
         );
         Page<Poster> objectPage = new Page<>(pageNum,pageSize);
         Page<Poster> page = posterService.page(objectPage, objectQueryWrapper);
