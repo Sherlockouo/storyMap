@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.List;
@@ -42,6 +39,17 @@ public class PostController {
 
     @Autowired
     MyUserDetailService myUserDetailService;
+
+    @PostMapping("/follow")
+    @ApiOperation("关注")
+    @RolesAllowed({Constant.LOGIN})
+    public R follow(Poster poster){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity loginUser = authUtil.getLoginUser(authentication);
+        poster.setUserid(loginUser.getId());
+        posterService.save(poster);
+        return R.success();
+    }
 
     @PostMapping("/post")
     @ApiOperation("发poster")
@@ -73,6 +81,7 @@ public class PostController {
     @ApiOperation("获取所有的poster信息")
     public R getAll(Integer pageNum,Integer pageSize){
         QueryWrapper<Poster> objectQueryWrapper = new QueryWrapper<>();
+        objectQueryWrapper.orderByDesc("create_time");
         Page<Poster> objectPage = new Page<>(pageNum,pageSize);
         Page<Poster> page = posterService.page(objectPage, objectQueryWrapper);
         PageUtils pageUtils = new PageUtils(page);
@@ -111,5 +120,22 @@ public class PostController {
     public R getInfo(Long posterId){
         Poster byId = posterService.getById(posterId);
         return R.success().put("data",byId);
+    }
+    @DeleteMapping("/del")
+    @ApiOperation("获取单个poster信息")
+//    @RolesAllowed({Constant.LOGIN})
+    public R del(Long posterId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Poster byId = posterService.getById(posterId);
+        if(byId==null){
+            return R.error("你要删除的动态不存在");
+        }
+        UserEntity loginUser = authUtil.getLoginUser(authentication);
+        if(loginUser.getId()!=byId.getUserid()){
+            return R.error("不能删除别人的动态");
+        }
+
+        posterService.removeById(posterId);
+        return R.success("删除成功");
     }
 }

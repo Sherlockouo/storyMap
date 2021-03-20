@@ -52,9 +52,9 @@ public class Knife4jConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("志愿者系统")
+                .title("StoryMap系统")
                 .contact(new Contact("吴顶峰","www.sherlockouo.com","wdf.coder@gmail.com"))
-                .description("志愿者系统接口文档")
+                .description("StoryMap系统接口文档")
                 .termsOfServiceUrl("localhost")
                 .version("1.0.0")
                 .build();
