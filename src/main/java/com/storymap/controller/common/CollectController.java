@@ -15,6 +15,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/collect")
@@ -31,9 +33,11 @@ public class CollectController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity loginUser = authUtil.getLoginUser(authentication);
         QueryWrapper<Collect> objectQueryWrapper = new QueryWrapper<>();
-        objectQueryWrapper.eq("posterid",posterId);
-        objectQueryWrapper.eq("userid",loginUser.getId());
-        objectQueryWrapper.eq("collectuserid",userid);
+        objectQueryWrapper.and(
+                Wrapper->Wrapper.eq("posterid",posterId)
+                        .eq("userid",loginUser.getId())
+                        .eq("collectuserid",userid)
+        );
         Collect one = collectService.getOne(objectQueryWrapper);
         if(one!=null){
             one.setStatus(!one.getStatus());
@@ -57,7 +61,11 @@ public class CollectController {
         QueryWrapper<Collect> collectlist = new QueryWrapper<>();
         collectlist.eq("userid",loginUser);
         collectlist.eq("status",Boolean.TRUE);
-        collectService.list(collectlist);
-        return R.success();
+        List<Collect> list = collectService.list(collectlist);
+        List<Collect> collect = list.stream().filter(b -> {
+
+            return true;
+        }).collect(Collectors.toList());
+        return R.success().put("data",collect);
     }
 }

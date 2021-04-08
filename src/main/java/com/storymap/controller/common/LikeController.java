@@ -1,5 +1,6 @@
 package com.storymap.controller.common;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.storymap.entity.Follow;
 import com.storymap.entity.Like;
@@ -30,10 +31,17 @@ public class LikeController {
     public R like(Long posterid,Long tolike){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity loginUser = authUtil.getLoginUser(authentication);
+        if(loginUser.getId()==tolike){
+            return R.error(400,"自己不能给自己点赞。");
+        }
         QueryWrapper<Like> objectQueryWrapper = new QueryWrapper<>();
-        objectQueryWrapper.eq("likeuserid",tolike);
-        objectQueryWrapper.eq("userid",loginUser.getId());
-        objectQueryWrapper.eq("posterid",posterid);
+        objectQueryWrapper.and(
+                Wrapper->Wrapper.eq("likeuserid",tolike)
+                                .eq("likeuserid",tolike)
+                                .eq("posterid",posterid)
+        );
+
+
         Like one = likeService.getOne(objectQueryWrapper);
         if(one!=null){
             one.setStatus(!one.getStatus());
@@ -41,7 +49,7 @@ public class LikeController {
             return R.success("点赞成功");
         }
         Like like = new Like();
-        like.setPosterId(posterid);
+        like.setPosterid(posterid);
         like.setLikeuserid(tolike);
         like.setUserid(loginUser.getId());
         like.setStatus(Boolean.TRUE);

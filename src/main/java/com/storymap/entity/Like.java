@@ -11,14 +11,14 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-@TableName("like")
+@TableName("likes")
 @ApiModel("like")
 public class Like implements Serializable {
     private static final long serialVersionUID = -3251952488868627851L;
     @TableId
     Long id;
 
-    @ApiModelProperty("被关注用户id")
+    @ApiModelProperty("被喜欢用户id")
     Long userid;
 
     @ApiModelProperty("创建时间")
@@ -29,7 +29,7 @@ public class Like implements Serializable {
     Long likeuserid;
 
     @ApiModelProperty("Posterid")
-    Long PosterId;
+    Long Posterid;
 
     @ApiModelProperty("status")
     Boolean status;

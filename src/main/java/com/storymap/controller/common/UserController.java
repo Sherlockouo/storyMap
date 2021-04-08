@@ -14,10 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
 import java.io.IOException;
@@ -126,5 +123,12 @@ public class UserController {
     public R update(String url) {
 
         return R.success();
+    }
+
+    @GetMapping("/getInfo/{userid}")
+    @ApiOperation("获取用户信息")
+    public R userinfo(@PathVariable Long userid){
+        UserEntity byId = userService.getById(userid);
+        return R.success().put("data",byId);
     }
 }

@@ -3,8 +3,10 @@ package com.storymap.controller.common;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.storymap.entity.Like;
 import com.storymap.entity.Poster;
 import com.storymap.entity.UserEntity;
+import com.storymap.service.LikeService;
 import com.storymap.service.MyUserDetailService;
 import com.storymap.service.PosterService;
 import com.storymap.service.UserService;
@@ -41,6 +43,9 @@ public class PostController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    LikeService likeService;
 
     @Autowired
     MyUserDetailService myUserDetailService;
@@ -107,6 +112,11 @@ public class PostController {
         records.stream().filter(b->{
             b.setAvatar(userService.getById(b.getUserid()).getAvatar());
             b.setUsername(userService.getById(b.getUserid()).getNickname());
+            QueryWrapper<Like> objectQueryWrapper1 = new QueryWrapper<>();
+            objectQueryWrapper1.eq("posterid",b.getId());
+            objectQueryWrapper1.eq("status",1);
+            int count = likeService.count(objectQueryWrapper1);
+            b.setLikes(count);
             return true;
         }).collect(Collectors.toList());
         PageUtils pageUtils = new PageUtils(records,page.getTotal(),page.getSize(),page.getCurrent());
@@ -129,6 +139,11 @@ public class PostController {
         records.stream().filter(b->{
             b.setAvatar(userService.getById(b.getUserid()).getAvatar());
             b.setUsername(userService.getById(b.getUserid()).getNickname());
+            QueryWrapper<Like> objectQueryWrapper1 = new QueryWrapper<>();
+            objectQueryWrapper1.eq("posterid",b.getId());
+            objectQueryWrapper1.eq("status",1);
+            int count = likeService.count(objectQueryWrapper1);
+            b.setLikes(count);
             return true;
         }).collect(Collectors.toList());
         PageUtils pageUtils = new PageUtils(records,page.getTotal(),page.getSize(),page.getCurrent());
@@ -144,6 +159,11 @@ public class PostController {
         }
         byId.setUsername(userService.getById(byId.getUserid()).getNickname());
         byId.setAvatar(userService.getById(byId.getUserid()).getAvatar());
+        QueryWrapper<Like> objectQueryWrapper1 = new QueryWrapper<>();
+        objectQueryWrapper1.eq("posterid",byId.getId());
+        objectQueryWrapper1.eq("status",1);
+        int count = likeService.count(objectQueryWrapper1);
+        byId.setLikes(count);
         return R.success().put("data",byId);
     }
     @DeleteMapping("/del")
