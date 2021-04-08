@@ -27,4 +27,7 @@ public class Follow implements Serializable {
 
     @ApiModelProperty("follower")
     Long followerid;
+
+    @ApiModelProperty("status")
+    Boolean status;
 }

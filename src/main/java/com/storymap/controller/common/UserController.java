@@ -85,7 +85,7 @@ public class UserController {
         UserEntity one1 = userService.getOne(user);
         log.info("one {}",one1);
         if (one1 != null) {
-
+//            return R.error("您已经注册过了，请登录！");
         } else {
 
             UserEntity userEntity = new UserEntity();

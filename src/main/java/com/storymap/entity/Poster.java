@@ -25,6 +25,14 @@ public class Poster implements Serializable {
     @ApiModelProperty("用户id")
     Long userid;
 
+    @TableField(exist = false)
+    @ApiModelProperty("username")
+    String username;
+
+    @ApiModelProperty("avarturl")
+    @TableField(exist = false)
+    String avatar;
+
     @ApiModelProperty("地址")
     String address;
 

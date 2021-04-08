@@ -30,4 +30,7 @@ public class Like implements Serializable {
 
     @ApiModelProperty("Posterid")
     Long PosterId;
+
+    @ApiModelProperty("status")
+    Boolean status;
 }

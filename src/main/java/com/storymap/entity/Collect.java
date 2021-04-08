@@ -30,4 +30,7 @@ public class Collect implements Serializable {
 
     @ApiModelProperty("被收藏用户id")
     Long collectuserid;
+
+    @ApiModelProperty("是否喜欢")
+    Boolean status;
 }
