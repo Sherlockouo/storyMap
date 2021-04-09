@@ -1,5 +1,6 @@
 package com.storymap.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -20,6 +21,9 @@ public class Follow implements Serializable {
 
     @ApiModelProperty("被关注用户id")
     Long userid;
+
+    @TableField(exist = false)
+    UserEntity userEntity;
 
     @ApiModelProperty("创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd")

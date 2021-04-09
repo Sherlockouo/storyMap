@@ -1,5 +1,6 @@
 package com.storymap.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -21,6 +22,9 @@ public class Like implements Serializable {
     @ApiModelProperty("被喜欢用户id")
     Long userid;
 
+    @TableField(exist = false)
+    UserEntity userEntity;
+
     @ApiModelProperty("创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd")
     Date createTime;
@@ -30,6 +34,9 @@ public class Like implements Serializable {
 
     @ApiModelProperty("Posterid")
     Long Posterid;
+
+    @TableField(exist = false)
+    Poster poster;
 
     @ApiModelProperty("status")
     Boolean status;

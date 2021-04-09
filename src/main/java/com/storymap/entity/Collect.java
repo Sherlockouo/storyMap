@@ -1,5 +1,6 @@
 package com.storymap.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -21,6 +22,9 @@ public class Collect implements Serializable {
     @ApiModelProperty("用户id")
     Long userid;
 
+    @TableField(exist = false)
+    UserEntity userEntity;
+
     @ApiModelProperty("创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd")
     Date createTime;
@@ -28,9 +32,12 @@ public class Collect implements Serializable {
     @ApiModelProperty("posterid")
     Long posterid;
 
+    @TableField(exist = false)
+    Poster poster;
+
     @ApiModelProperty("被收藏用户id")
     Long collectuserid;
 
     @ApiModelProperty("是否喜欢")
-    Boolean status;
+    Boolean collectstatus;
 }

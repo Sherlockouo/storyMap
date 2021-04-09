@@ -62,6 +62,31 @@ public class PostController {
         return R.success();
     }
 
+    @GetMapping("/user/{userId}")
+    @ApiOperation("获取自己的poster信息")
+    @RolesAllowed({Constant.LOGIN})
+    public R getuserpost(String type, Integer pageNum,Integer pageSize,@PathVariable Long userId){
+        UserEntity loginUser = userService.getById(userId);
+        QueryWrapper<Poster> objectQueryWrapper = new QueryWrapper<>();
+        objectQueryWrapper.eq("userid",loginUser.getId());
+        objectQueryWrapper.eq("type",type);
+        Page<Poster> objectPage = new Page<>(pageNum,pageSize);
+        Page<Poster> page = posterService.page(objectPage, objectQueryWrapper);
+        List<Poster> records = page.getRecords();
+        records.stream().filter(b->{
+            b.setAvatar(userService.getById(b.getUserid()).getAvatar());
+            b.setUsername(userService.getById(b.getUserid()).getNickname());
+            QueryWrapper<Like> objectQueryWrapper1 = new QueryWrapper<>();
+            objectQueryWrapper1.eq("posterid",b.getId());
+            objectQueryWrapper1.eq("status",1);
+            int count = likeService.count(objectQueryWrapper1);
+            b.setLikes(count);
+            return true;
+        }).collect(Collectors.toList());
+        PageUtils pageUtils = new PageUtils(records,page.getTotal(),page.getSize(),page.getCurrent());
+        return R.success().put("data",pageUtils);
+    }
+
     @GetMapping("/self")
     @ApiOperation("获取自己的poster信息")
     @RolesAllowed({Constant.LOGIN})
@@ -77,6 +102,11 @@ public class PostController {
         records.stream().filter(b->{
             b.setAvatar(userService.getById(b.getUserid()).getAvatar());
             b.setUsername(userService.getById(b.getUserid()).getNickname());
+            QueryWrapper<Like> objectQueryWrapper1 = new QueryWrapper<>();
+            objectQueryWrapper1.eq("posterid",b.getId());
+            objectQueryWrapper1.eq("status",1);
+            int count = likeService.count(objectQueryWrapper1);
+            b.setLikes(count);
             return true;
         }).collect(Collectors.toList());
         PageUtils pageUtils = new PageUtils(records,page.getTotal(),page.getSize(),page.getCurrent());
@@ -94,6 +124,11 @@ public class PostController {
         records.stream().filter(b->{
             b.setAvatar(userService.getById(b.getUserid()).getAvatar());
             b.setUsername(userService.getById(b.getUserid()).getNickname());
+            QueryWrapper<Like> objectQueryWrapper1 = new QueryWrapper<>();
+            objectQueryWrapper1.eq("posterid",b.getId());
+            objectQueryWrapper1.eq("status",1);
+            int count = likeService.count(objectQueryWrapper1);
+            b.setLikes(count);
             return true;
         }).collect(Collectors.toList());
 
@@ -106,6 +141,32 @@ public class PostController {
     public R getType(String type, Integer pageNum,Integer pageSize){
         QueryWrapper<Poster> objectQueryWrapper = new QueryWrapper<>();
         objectQueryWrapper.eq("type",type);
+        Page<Poster> objectPage = new Page<>(pageNum,pageSize);
+        Page<Poster> page = posterService.page(objectPage, objectQueryWrapper);
+        List<Poster> records = page.getRecords();
+        records.stream().filter(b->{
+            b.setAvatar(userService.getById(b.getUserid()).getAvatar());
+            b.setUsername(userService.getById(b.getUserid()).getNickname());
+            QueryWrapper<Like> objectQueryWrapper1 = new QueryWrapper<>();
+            objectQueryWrapper1.eq("posterid",b.getId());
+            objectQueryWrapper1.eq("status",1);
+            int count = likeService.count(objectQueryWrapper1);
+            b.setLikes(count);
+            return true;
+        }).collect(Collectors.toList());
+        PageUtils pageUtils = new PageUtils(records,page.getTotal(),page.getSize(),page.getCurrent());
+        return R.success().put("data",pageUtils);
+    }
+
+    @GetMapping("/localRange")
+    @ApiOperation("获取本地poster信息")
+    public R getLocalRange( @ApiParam("range")Double range, @ApiParam("lat") Number lat,@ApiParam("lng") Number lng ,@ApiParam("type") String type, @ApiParam("pageNumber") Integer pageNum,@ApiParam("pageSize") Integer pageSize){
+        QueryWrapper<Poster> objectQueryWrapper = new QueryWrapper<>();
+        objectQueryWrapper.and(
+                Wrapper->Wrapper.between("latitude",lat.floatValue()-range,lat.floatValue()+range)
+                        .between("longtitude",lng.floatValue()-range,lng.floatValue()+range)
+                        .eq("type",type)
+        );
         Page<Poster> objectPage = new Page<>(pageNum,pageSize);
         Page<Poster> page = posterService.page(objectPage, objectQueryWrapper);
         List<Poster> records = page.getRecords();
@@ -149,6 +210,7 @@ public class PostController {
         PageUtils pageUtils = new PageUtils(records,page.getTotal(),page.getSize(),page.getCurrent());
         return R.success().put("data",pageUtils);
     }
+
     @GetMapping("/info")
     @ApiOperation("获取单个poster信息")
 //    @RolesAllowed({Constant.LOGIN})
@@ -160,9 +222,10 @@ public class PostController {
         byId.setUsername(userService.getById(byId.getUserid()).getNickname());
         byId.setAvatar(userService.getById(byId.getUserid()).getAvatar());
         QueryWrapper<Like> objectQueryWrapper1 = new QueryWrapper<>();
-        objectQueryWrapper1.eq("posterid",byId.getId());
+        objectQueryWrapper1.eq("posterid",posterId);
         objectQueryWrapper1.eq("status",1);
         int count = likeService.count(objectQueryWrapper1);
+//        log.info("count {}",count);
         byId.setLikes(count);
         return R.success().put("data",byId);
     }
