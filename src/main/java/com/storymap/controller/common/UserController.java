@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.Random;
 
@@ -117,12 +118,36 @@ public class UserController {
         return R.success().put("token", token).put("userinfo", userinfo);
     }
 
-    @PutMapping("/update")
-    @ApiOperation("更新头像 还没写")
+    @PutMapping("/updateBgimg")
+    @ApiOperation("更新背景图片")
     @RolesAllowed({Constant.LOGIN})
-    public R update(String url) {
-
-        return R.success();
+    public R updateBgUrl(@NotNull String bgimg) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity loginUser = authUtil.getLoginUser(authentication);
+        loginUser.setBgimg(bgimg);
+        userService.updateById(loginUser);
+        return R.success("更新成功");
+    }
+    @PutMapping("/updateAvatar")
+    @ApiOperation("更新头像链接")
+    @RolesAllowed({Constant.LOGIN})
+    public R updateAvatar(@NotNull String avatar) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity loginUser = authUtil.getLoginUser(authentication);
+        loginUser.setAvatar(avatar);
+        userService.updateById(loginUser);
+        return R.success("更新成功");
+    }
+    @PutMapping("/updateInfo")
+    @ApiOperation("更新基本信息")
+    @RolesAllowed({Constant.LOGIN})
+    public R update(@NotNull String nickname,@NotNull String motto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserEntity loginUser = authUtil.getLoginUser(authentication);
+        loginUser.setNickname(nickname);
+        loginUser.setMotto(motto);
+        userService.updateById(loginUser);
+        return R.success("更新成功");
     }
 
     @GetMapping("/getInfo/{userid}")
