@@ -70,10 +70,10 @@ public class HttpUtl {
             }
 //            JSONObject jsonObject = JSON.parseObject(sb.toString());
             Gson gson = new Gson();
-            JsonObject jsonObject = gson.fromJson(sb.toString(), JsonObject.class);
-            String openid = null;
-            if (jsonObject.has("openid")) {
-                openid = jsonObject.get("openid").toString();
+                JsonObject jsonObject = gson.fromJson(sb.toString(), JsonObject.class);
+                String openid = null;
+                if (jsonObject.has("openid")) {
+                    openid = jsonObject.get("openid").toString();
             } else {
                 log.error("errmsg={}",jsonObject.toString());
             }

@@ -1,6 +1,8 @@
 package com.storymap.controller.common;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.storymap.entity.UserEntity;
 import com.storymap.service.MyUserDetailService;
 import com.storymap.service.UserService;
@@ -17,8 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.util.Date;
+import java.util.Map;
 import java.util.Random;
 
 @Slf4j
@@ -61,7 +64,6 @@ public class UserController {
     @ApiOperation("登录 发获取的code")
     public R login(String wxcode) throws IOException {
         String openid = httpUtl.getOpenId(wxcode);
-//        /getopenid/
 
         QueryWrapper<UserEntity> objectQueryWrapper = new QueryWrapper<>();
         objectQueryWrapper.eq("openid", openid);
@@ -121,17 +123,22 @@ public class UserController {
     @PutMapping("/updateBgimg")
     @ApiOperation("更新背景图片")
     @RolesAllowed({Constant.LOGIN})
-    public R updateBgUrl(@NotNull String bgimg) {
+    public R updateBgUrl(@RequestParam(value = "bgimg",required = true,defaultValue = "http://qwq.fjtbkyc.net/image/bgimg/bg1.jpg") String bgimg) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity loginUser = authUtil.getLoginUser(authentication);
+
+
+        log.info("bg {}",bgimg);
         loginUser.setBgimg(bgimg);
+        log.info("bg {}",loginUser.getBgimg());
         userService.updateById(loginUser);
         return R.success("更新成功");
     }
+
     @PutMapping("/updateAvatar")
     @ApiOperation("更新头像链接")
     @RolesAllowed({Constant.LOGIN})
-    public R updateAvatar(@NotNull String avatar) {
+    public R updateAvatar(@RequestParam(value = "avatar",required = true,defaultValue = "") String avatar) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity loginUser = authUtil.getLoginUser(authentication);
         loginUser.setAvatar(avatar);
@@ -141,11 +148,16 @@ public class UserController {
     @PutMapping("/updateInfo")
     @ApiOperation("更新基本信息")
     @RolesAllowed({Constant.LOGIN})
-    public R update(@NotNull String nickname,@NotNull String motto) {
+    public R update(@RequestParam(value = "nickname",required = true,defaultValue = "") String nickname,
+                    @RequestParam(value = "motto",required = true,defaultValue = "") String motto,
+                    @RequestParam(value = "address",required = true,defaultValue = "") String address,
+                    @RequestParam(value = "birthday",required = true,defaultValue = "2020-04-01") Date birthday) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity loginUser = authUtil.getLoginUser(authentication);
         loginUser.setNickname(nickname);
         loginUser.setMotto(motto);
+        loginUser.setAddress(address);
+        loginUser.setBirthday(birthday);
         userService.updateById(loginUser);
         return R.success("更新成功");
     }

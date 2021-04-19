@@ -42,7 +42,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(user).permitAll()
                     .antMatchers(posts).permitAll()
                     .antMatchers(
-                            "/msg/send",
+                            "/chat/*",
                             "/code/**",
                             "/upload/**",
                             "/files/**",

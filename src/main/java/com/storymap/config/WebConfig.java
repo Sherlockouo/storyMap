@@ -41,4 +41,6 @@ public class WebConfig extends WebMvcConfigurationSupport {
         log.info("shit! mvc");
         super.addResourceHandlers(registry);
     }
+
+
 }

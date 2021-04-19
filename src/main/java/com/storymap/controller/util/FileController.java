@@ -6,6 +6,7 @@ import com.storymap.entity.UserEntity;
 import com.storymap.service.FileService;
 import com.storymap.service.UserService;
 import com.storymap.util.common.R;
+import com.storymap.util.common.UploadUtil;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,9 @@ public class FileController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    UploadUtil uploadUtil;
+
     @PostMapping("/files")
     @ApiOperation(value = "上传文件 返回文件连接")
     @Transactional(propagation = Propagation.REQUIRED)
@@ -70,103 +74,11 @@ public class FileController {
         Map<String, Object> res = new HashMap<>();
         List<String> list = new ArrayList<>();
         for (MultipartFile file : files) {
-            String randomName = UUID.randomUUID().toString().replace("-", "");
-
-            String originName = file.getOriginalFilename();
-            FileEntity fileEntity = new FileEntity();
-            fileEntity.setFilename(originName);
-            fileEntity.setUserid(one.getId());
-            String fname = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-
-            randomName+=fname;
-            fname=randomName;
-
-            String pic = ".+(.png|.jpeg|.jpg|.gif|.bmp|.psd|.tiff|.tga|.eps)$";
-
-            String video = ".+(.swf|.mkv|.flv|.mp4|.rmvb|.avi|.mpeg|.ra|.ram|.mov|.wmv)$";
-
-            // match images
-            Pattern compile = Pattern.compile(pic);
-            Matcher matcher = compile.matcher(fname);
-
-            // match videos
-            Pattern vp = Pattern.compile(video);
-            Matcher mv = compile.matcher(fname);
-
-            File path = new File(ResourceUtils.getURL( "classpath:" ).getPath());
-            if (!path.exists()) {
-                path = new File( "" );
+            String fileUrl = uploadUtil.uploadfiles(file,one,request);
+            if(fileUrl.equals("")){
+                return R.error(502,"文件上传出错");
             }
-
-            if (matcher.matches()) {
-//                File dest = new File(winPicPath + fname).getCanonicalFile();
-
-
-                File dest = new File(path.getAbsolutePath(),"files/images/");
-
-
-                log.info("dest {}", dest);
-                File target = new File(dest,fname);
-                Path path1 = target.toPath();
-                try {
-                    Files.write(path1,file.getBytes());
-
-                } catch (Exception e) {
-                    log.error("{}", e);
-                    return R.error("上传失败");
-                }
-
-                String filePath = request.getHeader("X-Forwarded-Scheme") + "://" + request.getServerName()+ "/files/images/" + fname;
-                list.add(filePath);
-                fileEntity.setType("image");
-                fileEntity.setFileurl(filePath);
-                fileService.save(fileEntity);
-            }else if(mv.matches()){
-
-                File dest = new File(path.getAbsolutePath(),"files/video/");
-
-
-                log.info("dest {}", dest);
-                File target = new File(dest,fname);
-                Path path1 = target.toPath();
-                try {
-                    Files.write(path1,file.getBytes());
-
-
-                } catch (Exception e) {
-                    log.error("{}", e);
-                    return R.error("上传失败");
-                }
-
-                String filePath = request.getHeader("X-Forwarded-Scheme") + "://" + request.getServerName()   + "/files/videos/" + fname;
-                list.add(filePath);
-                fileEntity.setType("video");
-                fileEntity.setFileurl(filePath);
-                fileService.save(fileEntity);
-            }else{
-
-
-
-                File dest = new File(path.getAbsolutePath(),"files/others/");
-
-
-                log.info("dest {}", dest);
-                File target = new File(dest,fname);
-                Path path1 = target.toPath();
-                try {
-                    Files.write(path1,file.getBytes());
-
-                } catch (Exception e) {
-                    log.error("{}", e);
-                    return R.error("上传失败");
-                }
-
-                String filePath = request.getHeader("X-Forwarded-Scheme") + "://" + request.getServerName() + "/files/others/" + fname;
-                list.add(filePath);
-                fileEntity.setType("others");
-                fileEntity.setFileurl(filePath);
-                fileService.save(fileEntity);
-            }
+            list.add(fileUrl);
         }
         res.put("code", 200);
         res.put("msg", "上传成功");
