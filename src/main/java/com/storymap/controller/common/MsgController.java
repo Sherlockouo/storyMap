@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,15 +58,30 @@ public class MsgController {
         Page<Message> page = msgService.page(msgpage,msgwrapper);
         Map<Integer,Long> hashMap = new HashMap<>();
         List<Message> records = page.getRecords();
-        for(int i=0;i<records.size();i++){
 
-            hashMap.put(i,records.get(i).getReciveuserid());
-            hashMap.put(i,records.get(i).getSenduserid());
+        List<String> lastlog = new ArrayList<>();
+        for(int i=0;i<records.size();i++){
+            if(loginUser.getId()!=records.get(i).getReciveuserid())
+                hashMap.put(i,records.get(i).getReciveuserid());
+            if(loginUser.getId()!=records.get(i).getSenduserid())
+                hashMap.put(i,records.get(i).getSenduserid());
         }
         Map<Integer,Object> hhMap = new HashMap<>();
+
         for(Map.Entry<Integer,Long> entry:hashMap.entrySet()){
             UserEntity one = userService.getById(entry.getValue());
-            hhMap.put(entry.getKey(),one);
+            QueryWrapper<Message> wrapper = new QueryWrapper<>();
+            wrapper.and(
+                    Wrapper-> Wrapper.eq("senduserid",loginUser.getId())
+                            .eq("reciveuserid",toUserId)
+                            .eq("senduserid",toUserId)
+                            .eq("reciveuserid",loginUser.getId())
+            ).orderByDesc("sendtime");
+
+            List<Message> list = msgService.list(wrapper);
+            Message message = list.get(0);
+            message.setSenduser(one);
+            hhMap.put(entry.getKey(),message);
         }
 
         return  R.success().put("data",hhMap);

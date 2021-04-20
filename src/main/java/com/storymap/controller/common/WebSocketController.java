@@ -27,6 +27,9 @@ public class WebSocketController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    WebSocketUtil webSocketUtil;
+
 
     /**
      * 连接成功响应
@@ -50,11 +53,11 @@ public class WebSocketController {
     public void onMessage(@PathParam("userId") @PathVariable Integer userId, String message) {
 
 
-        log.info("服务器收到：[" +userId + "] : " + message);
+        log.info("服务器收到：[" +userId + "] : {}" + message);
         Message msg = JSON.parseObject(message, Message.class);
-//        msg.setSendtext("[" +userId + "] : " + msg.getSendtext());
         log.info("msg {}",msg);
-        WebSocketUtil.sendMessageSingle(msg);
+        webSocketUtil.sendMessageSingle(msg);
+        log.info("msg {}",msg);
     }
 
     /**
@@ -63,11 +66,11 @@ public class WebSocketController {
     @OnClose
     public void onClose(@PathParam("userId") @PathVariable Integer userId, Session session) throws IOException {
         //当前的Session 移除
-        WebSocketUtil.ONLINE_USER_SESSIONS.remove(userId);
+        webSocketUtil.ONLINE_USER_SESSIONS.remove(userId);
 
         log.info("[" + userId + "] :     断开连接！");
         //并且通知其他人当前用户已经断开连接了
-        //WebSocketUtil.sendMessageAll("[" +userId + "] : 断开连接！");
+        //webSocketUtil.sendMessageAll("[" +userId + "] : 断开连接！");
         session.close();
     }
 
@@ -76,6 +79,7 @@ public class WebSocketController {
      */
     @OnError
     public void onError(Session session, Throwable throwable) throws IOException {
+        log.error("连接异常响应!!");
         session.close();
     }
 }

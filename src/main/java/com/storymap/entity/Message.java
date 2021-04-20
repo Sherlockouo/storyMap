@@ -1,5 +1,6 @@
 package com.storymap.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -23,8 +24,14 @@ public class Message implements Serializable {
     @ApiModelProperty("发送者id")
     private Long senduserid;
 
+    @TableField(exist = false)
+    private UserEntity senduser;
+
     @ApiModelProperty("接收者id")
     private Long reciveuserid;
+
+    @TableField(exist = false)
+    private UserEntity reciveuser;
 
     @ApiModelProperty("发送时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
