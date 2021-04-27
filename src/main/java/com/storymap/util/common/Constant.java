@@ -8,5 +8,4 @@ public class Constant {
     public static final Double RANGE = 0.1;
     public static final String TYPE_LOST = "lost";
     public static final String TYPE_POST = "post";
-
 }

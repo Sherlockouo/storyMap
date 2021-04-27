@@ -77,14 +77,18 @@ public class UserController {
     @PostMapping("/register")
     @Transactional(propagation = Propagation.REQUIRED)
     @ApiOperation("注册 => 微信授权 =>填写邮箱 =>注册成功 =>邮箱会发给他生成的验证码")
-    public R register(String wxcode,String avatarUrl,String nickname) throws IOException {
+    @ResponseBody
+    public R register(@RequestParam(value = "wxcode",required = true)String wxcode,@RequestParam(value = "avatarUrl",required = true) String avatarUrl,@RequestParam(value = "nickname",required = true)String nickname) throws IOException {
         String openId = httpUtl.getOpenId(wxcode);
 
         QueryWrapper<UserEntity> user = new QueryWrapper<>();
         user.eq("username", openId);
         UserEntity one1 = userService.getOne(user);
-        log.info("one {}",one1);
+        log.info("one {} {}",avatarUrl,nickname);
         if (one1 != null) {
+            one1.setAvatar(avatarUrl);
+            one1.setNickname(nickname);
+            userService.updateById(one1);
 //            return R.error("您已经注册过了，请登录！");
         } else {
 
@@ -123,11 +127,10 @@ public class UserController {
     @PutMapping("/updateBgimg")
     @ApiOperation("更新背景图片")
     @RolesAllowed({Constant.LOGIN})
-    public R updateBgUrl(@RequestParam(value = "bgimg",required = true,defaultValue = "http://qwq.fjtbkyc.net/image/bgimg/bg1.jpg") String bgimg) {
+    public R updateBgUrl(@RequestParam(value = "bgimg",required = true) String bgimg) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity loginUser = authUtil.getLoginUser(authentication);
-
-
+        
         log.info("bg {}",bgimg);
         loginUser.setBgimg(bgimg);
         log.info("bg {}",loginUser.getBgimg());
