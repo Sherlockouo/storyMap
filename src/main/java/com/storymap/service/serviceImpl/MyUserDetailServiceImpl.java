@@ -2,7 +2,9 @@ package com.storymap.service.serviceImpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
+import com.storymap.entity.Admin;
 import com.storymap.entity.UserEntity;
+import com.storymap.service.AdminService;
 import com.storymap.service.FileService;
 import com.storymap.service.MyUserDetailService;
 import com.storymap.service.UserService;
@@ -29,6 +31,9 @@ public class MyUserDetailServiceImpl implements MyUserDetailService, UserDetails
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AdminService adminService;
 
     @Autowired
     private FileService fileService;
@@ -63,4 +68,19 @@ public class MyUserDetailServiceImpl implements MyUserDetailService, UserDetails
         return new User(one.getUsername(),one.getPassword() ,authorities);
     }
 
+    @Override
+    public UserDetails loadAdminByname(String username) {
+        QueryWrapper<Admin> objectQueryWrapper = new QueryWrapper<>();
+        objectQueryWrapper.eq("username", username);
+
+        Admin one = adminService.getOne(objectQueryWrapper);
+        if(one==null)
+        {
+            return null;
+        }
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        //暂时给login 权限没有划分
+        authorities.add(new SimpleGrantedAuthority(Constant.LOGIN));
+        return new User(one.getUsername(),one.getPassword() ,authorities);
+    }
 }

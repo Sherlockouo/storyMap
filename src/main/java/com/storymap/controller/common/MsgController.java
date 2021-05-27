@@ -67,14 +67,28 @@ public class MsgController {
 
 
         for(int i=0;i<records.size();i++){
-            Message message = records.get(i);
+//            Message message = records.get(i);
+            //如果消息是自己发的
             if(loginUser.getId()!=records.get(i).getReciveuserid()&&hashMap.get(records.get(i).getSenduserid())==null) {
                 UserEntity one = userService.getById(records.get(i).getReciveuserid());
+                QueryWrapper<Message> rqw = new QueryWrapper<>();
+                rqw.eq("senduserid",loginUser.getId());
+                rqw.eq("reciveuserid",one.getId());
+                rqw.orderByDesc("sendtime");
+                List<Message> list = msgService.list(rqw);
+                Message message = list.get(0);
                 message.setSenduser(one);
-                hashMap.put(records.get(i).getReciveuserid(), message);
+                hashMap.put(records.get(i).getReciveuserid(), list.get(0));
             }
+            //如果消息是对面发的
             if(loginUser.getId()!=records.get(i).getSenduserid()&&hashMap.get(records.get(i).getSenduserid())==null) {
                 UserEntity one = userService.getById(records.get(i).getSenduserid());
+                QueryWrapper<Message> rqw = new QueryWrapper<>();
+                rqw.eq("senduserid",one.getId());
+                rqw.eq("reciveuserid",loginUser.getId());
+                rqw.orderByDesc("sendtime");
+                List<Message> list = msgService.list(rqw);
+                Message message = list.get(0);
                 message.setSenduser(one);
                 hashMap.put(records.get(i).getSenduserid(), message);
             }

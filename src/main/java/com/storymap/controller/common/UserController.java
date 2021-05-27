@@ -127,10 +127,9 @@ public class UserController {
     @PutMapping("/updateBgimg")
     @ApiOperation("更新背景图片")
     @RolesAllowed({Constant.LOGIN})
-    public R updateBgUrl(@RequestParam(value = "bgimg",required = true) String bgimg) {
+    public R updateBgUrl(@RequestParam("bgimg") String bgimg) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity loginUser = authUtil.getLoginUser(authentication);
-        
         log.info("bg {}",bgimg);
         loginUser.setBgimg(bgimg);
         log.info("bg {}",loginUser.getBgimg());
@@ -141,7 +140,7 @@ public class UserController {
     @PutMapping("/updateAvatar")
     @ApiOperation("更新头像链接")
     @RolesAllowed({Constant.LOGIN})
-    public R updateAvatar(@RequestParam(value = "avatar",required = true,defaultValue = "") String avatar) {
+    public R updateAvatar(@RequestParam("avatar") String avatar) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity loginUser = authUtil.getLoginUser(authentication);
         loginUser.setAvatar(avatar);
