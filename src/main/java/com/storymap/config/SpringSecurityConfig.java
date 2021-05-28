@@ -25,7 +25,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private MyUserDetailService myUserDetailService;
 
-    private String[] user = {"/user/login","/user/register"};
+    private String[] user = {"/user/login","/user/register","/admin/login"};
+
+    private String[] notify={"/notify/last"};
 
     private String[] posts ={"/poster/all","/poster/local","/poster/info/**","/poster/search/**","/poster/type/**"};
 
@@ -39,6 +41,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 //.logout().logoutUrl("/logout").logoutSuccessUrl("/")
                 // 开放接口访问权限，不需要登录授权就可以访问
                 .authorizeRequests()
+                    .antMatchers(notify).permitAll()
                     .antMatchers(user).permitAll()
                     .antMatchers(posts).permitAll()
                     .antMatchers(

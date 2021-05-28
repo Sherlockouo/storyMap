@@ -1,8 +1,10 @@
 package com.storymap.controller.common;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.storymap.entity.Poster;
 import com.storymap.entity.UserEntity;
 import com.storymap.service.MyUserDetailService;
 import com.storymap.service.UserService;
@@ -55,7 +57,7 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserEntity loginUser = authUtil.getLoginUser(authentication);
         UserDetails userDetails = myUserDetailService.loadUserByname(loginUser.getUsername());
-        String token = jwtTokenUtil.generateToken(userDetails);
+        String token = jwtTokenUtil.generateToken(userDetails,Constant.LOGIN);
         token = "Bearer " + token;
         return R.success().put("token", token);
     }
@@ -69,7 +71,7 @@ public class UserController {
         objectQueryWrapper.eq("openid", openid);
         UserEntity one = userService.getOne(objectQueryWrapper);
         UserDetails userDetails = myUserDetailService.loadUserByname(one.getUsername());
-        String token = jwtTokenUtil.generateToken(userDetails);
+        String token = jwtTokenUtil.generateToken(userDetails,Constant.LOGIN);
         token = "Bearer " + token;
         return R.success().put("token", token).put("userinfo", one);
     }
@@ -119,7 +121,7 @@ public class UserController {
         }
         UserEntity userinfo = userService.getOne(user);
         UserDetails userDetails = myUserDetailService.loadUserByname(openId);
-        String token = jwtTokenUtil.generateToken(userDetails);
+        String token = jwtTokenUtil.generateToken(userDetails,Constant.LOGIN);
         token = "Bearer " + token;
         return R.success().put("token", token).put("userinfo", userinfo);
     }
@@ -169,5 +171,15 @@ public class UserController {
     public R userinfo(@PathVariable Long userid){
         UserEntity byId = userService.getById(userid);
         return R.success().put("data",byId);
+    }
+
+    @GetMapping("/all")
+    @RolesAllowed({Constant.ADMIN})
+    @ApiOperation("获取所有用户")
+    public R getAllUser(Integer pageSize ,Integer pageNum){
+        Page<UserEntity> objectPage = new Page<>(pageNum,pageSize);
+        Page<UserEntity> page = userService.page(objectPage);
+
+        return R.success().put("data",new PageUtils(page));
     }
 }

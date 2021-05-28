@@ -9,7 +9,8 @@ spring:
     username: root
     password: wdf123456
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://localhost:3306/storymap?serverTimezone=UTC
+#    url: jdbc:mysql://localhost:3306/storymap?serverTimezone=UTC
+#    url: jdbc:mysql://121.40.193.32:3306/storymap?serverTimezone=UTC
     druid:
       filter:
         wall:

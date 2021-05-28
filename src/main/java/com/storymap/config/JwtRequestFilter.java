@@ -1,6 +1,7 @@
 package com.storymap.config;
 
 import com.storymap.service.MyUserDetailService;
+import com.storymap.util.common.Constant;
 import com.storymap.util.common.JwtTokenUtil;
 import com.storymap.util.exception.VolException;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -72,9 +73,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             UserDetails userDetails = null;
             // Once we get the token validate it.
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                userDetails = myUserDetailService.loadUserByname(username);
-
-
+                if(userType.equals(Constant.LOGIN))
+                    userDetails = myUserDetailService.loadUserByname(username);
+                else if(userType.equals(Constant.ADMIN))
+                    userDetails = myUserDetailService.loadAdminByname(username);
             }
 
 

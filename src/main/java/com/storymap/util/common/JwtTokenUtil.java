@@ -52,9 +52,9 @@ public class JwtTokenUtil {
     }
 
     //generate token for user
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails,String usertype) {
         Map<String, Object> claims = new HashMap<>();
-        return doGenerateToken(claims, userDetails.getUsername(),Constant.LOGIN);
+        return doGenerateToken(claims, userDetails.getUsername(),usertype);
     }
 
     //while creating the token -

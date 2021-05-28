@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -63,4 +64,7 @@ public class Poster implements Serializable {
 
     @ApiModelProperty("tags")
     String tags;
+
+    @ApiModelProperty("status")
+    Integer status;
 }

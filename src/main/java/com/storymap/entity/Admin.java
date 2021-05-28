@@ -1,5 +1,6 @@
 package com.storymap.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -20,6 +21,9 @@ import java.util.Date;
 @TableName("admin")
 public class Admin implements Serializable {
     private static final long serialVersionUID = 6202489132802261863L;
+
+    @TableId
+    Long id;
 
     @ApiModelProperty("头像")
     String avatar;

@@ -11,3 +11,6 @@ files:
     viupload: file:/Volumes/Data/Projects/java/storyMap/target/classes/files/videos/
     #    其他文件上传路径
     otherupload: file:/Volumes/Data/Projects/java/storyMap/target/classes/files/others/
+spring:
+  datasource:
+    url: jdbc:mysql://121.40.193.32:3306/storymap?serverTimezone=UTC
