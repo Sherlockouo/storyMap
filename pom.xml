@@ -21,12 +21,12 @@
         <!-- dev开发环境配置,release为生产环境配置 -->
         <profile>
             <id>dev</id>
-            <properties>
-                <profileActive>dev</profileActive>
-            </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
+            <properties>
+                <profileActive>dev</profileActive>
+            </properties>
         </profile>
         <profile>
             <id>release</id>
